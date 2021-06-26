@@ -1,0 +1,31 @@
+<nz-table [nzShowPagination]="false" [nzData]="_data">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngFor="let data of labels | keyvalue; let index = index">
+      <tr class="codelabel">
+        <td class="codelabel-name">{{ data.key }}</td>
+        <td class="codelable-line">
+          <a (click)="jumpToLine(data.value)">
+            {{ data.value | numeral: displayHex }}
+          </a>
+        </td>
+        <td class="codelabel-value">
+          {{ memory.data[data.value] | numeral: displayHex }}
+          <ng-template
+            [ngIf]="
+              memory.data[data.value] >= 32 && memory.data[data.value] <= 126
+            "
+          >
+            <span> ('{{ memory.data[data.value] | getChar }}') </span>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-container>
+  </tbody>
+</nz-table>

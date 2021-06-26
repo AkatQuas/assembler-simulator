@@ -1,0 +1,59 @@
+<h4 nz-typography>Registers / Flags</h4>
+<nz-table [nzData]="[1]" [nzNoResult]="null" [nzShowPagination]="false">
+  <thead>
+    <tr>
+      <th style="text-align: center">A</th>
+      <th style="text-align: center">B</th>
+      <th style="text-align: center">C</th>
+      <th style="text-align: center">D</th>
+      <th style="text-align: center">IP</th>
+      <th style="text-align: center">SP</th>
+      <th style="text-align: center">Z</th>
+      <th style="text-align: center">C</th>
+      <th style="text-align: center">F</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center" class="source-code">
+      <td>
+        <div ng-class="displayA && 'marker marker-a'">
+          <small>{{ cpu.gpr[0] | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <div ng-class="displayB && 'marker marker-b'">
+          <small>{{ cpu.gpr[1] | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <div ng-class="displayC && 'marker marker-c'">
+          <small>{{ cpu.gpr[2] | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <div ng-class="displayD && 'marker marker-d'">
+          <small>{{ cpu.gpr[3] | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <div class="marker marker-ip">
+          <small>{{ cpu.ip | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <div class="marker marker-sp">
+          <small>{{ cpu.sp | numeral: displayHex }}</small>
+        </div>
+      </td>
+      <td>
+        <small>{{ cpu.zero | flag }}</small>
+      </td>
+      <td>
+        <small>{{ cpu.carry | flag }}</small>
+      </td>
+      <td>
+        <small>{{ cpu.fault | flag }}</small>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

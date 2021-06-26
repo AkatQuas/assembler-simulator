@@ -1,0 +1,142 @@
+<nz-card [nzBorderless]="true">
+  <ng-template [ngIf]="error">
+    <nz-alert nzType="error" [nzMessage]="error"></nz-alert>
+  </ng-template>
+  <div nz-row [nzGutter]="16">
+    <div nz-col nzSpan="8">
+      <nz-card nzTitle="Code" [nzExtra]="instructionSet">
+        <textarea
+          #textarea
+          id="sourceCode"
+          class="source-code"
+          rows="30"
+          nz-input
+          tabSupport
+          [selectedLine]="selectedLine"
+          [(ngModel)]="code"
+        ></textarea>
+      </nz-card>
+      <ng-template #instructionSet>
+        <app-instruction></app-instruction>
+      </ng-template>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-button-group>
+        <app-uploader (onParse)="parsedCode($event)"></app-uploader>
+        <button nz-button (click)="assemble()">
+          <i nz-icon nzType="apartment" nzTheme="outline"></i>Assemble
+        </button>
+        <ng-template *ngIf="isRunning; then stopButton; else runButton">
+        </ng-template>
+        <ng-template #runButton>
+          <button nz-button nzType="primary" (click)="run()">
+            <i nz-icon nzType="fast-forward" nzTheme="outline"></i>Run
+          </button></ng-template
+        >
+        <ng-template #stopButton>
+          <button nz-button nzType="primary" nzDanger (click)="stop()">
+            <i nz-icon nzType="pause" nzTheme="outline"></i>Stop
+          </button></ng-template
+        >
+
+        <button nz-button nzType="default" (click)="executeStep()">
+          <i nz-icon nzType="step-forward" nzTheme="outline"></i> Step
+        </button>
+
+        <button nz-button nzType="default" (click)="reset()">
+          <i nz-icon nzType="undo" nzTheme="outline"></i>Reset
+        </button>
+      </nz-button-group>
+      <nz-divider></nz-divider>
+      <nz-card nzTitle="CPU & Memory">
+        <app-registers [displayHex]="displayHex"></app-registers>
+        <h4 nz-typography>RAM</h4>
+        <div class="source-code memorys">
+          <ng-container *ngFor="let m of memory.data; let index = index">
+            <div class="memory-block" [ngClass]="getMemoryCellCss(index)">
+              <div
+                [ngClass]="getMemoryInnerCellCss(index)"
+                [ngSwitch]="isInstruction(index)"
+              >
+                <small *ngSwitchDefault>{{ m | numeral: displayHex }}</small>
+                <a *ngSwitchCase="true" (click)="jumpToLine(index)">
+                  <small>{{ m | numeral: displayHex }}</small>
+                </a>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </nz-card>
+    </div>
+    <div nz-col nzSpan="8">
+      <nz-card>
+        <h4 nz-typography>Output</h4>
+        <app-output></app-output>
+        <nz-divider></nz-divider>
+        <h4 nz-typography>Labels</h4>
+        <app-labels
+          [displayHex]="displayHex"
+          [labels]="labels"
+          (jump)="jumpToLine($event)"
+        ></app-labels>
+        <nz-divider></nz-divider>
+        <nz-descriptions nzTitle="Display Controls">
+          <nz-descriptions-item nzTitle="Clock speed">
+            <nz-select [(ngModel)]="speed" [nzSize]="'small'">
+              <ng-container *ngFor="let item of speeds; let index = index">
+                <nz-option
+                  [nzValue]="item.speed"
+                  [nzLabel]="item.desc"
+                ></nz-option>
+              </ng-container>
+            </nz-select>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Instructions">
+            <nz-switch
+              [(ngModel)]="displayInstr"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="View">
+            <nz-switch
+              [(ngModel)]="displayHex"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+        </nz-descriptions>
+        <nz-descriptions nzTitle="Register addressing">
+          <nz-descriptions-item nzTitle="A">
+            <nz-switch
+              [(ngModel)]="displayA"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="B">
+            <nz-switch
+              [(ngModel)]="displayB"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="C">
+            <nz-switch
+              [(ngModel)]="displayC"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="D">
+            <nz-switch
+              [(ngModel)]="displayD"
+              nzCheckedChildren="Show"
+              nzUnCheckedChildren="Hide"
+            ></nz-switch>
+          </nz-descriptions-item>
+        </nz-descriptions>
+      </nz-card>
+    </div>
+  </div>
+</nz-card>
